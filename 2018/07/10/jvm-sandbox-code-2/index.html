@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('https://schutzehades.github.io').hostname,
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.6.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    comments: {"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
+  };
+</script>
+
+  <meta name="description" content="com.alibaba.jvm.sandbox.core.server.jetty.JettyCoreServer类解读。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="jvm-sandbox源码阅读（二）——JettyCoreServer">
+<meta property="og:url" content="https:&#x2F;&#x2F;schutzehades.github.io&#x2F;2018&#x2F;07&#x2F;10&#x2F;jvm-sandbox-code-2&#x2F;index.html">
+<meta property="og:site_name" content="Hades Palace">
+<meta property="og:description" content="com.alibaba.jvm.sandbox.core.server.jetty.JettyCoreServer类解读。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2018-07-10T08:36:47.000Z">
+<meta property="article:modified_time" content="2019-12-18T09:33:11.654Z">
+<meta property="article:author" content="Schütze Hades">
+<meta property="article:tag" content="jvm-sandbox">
+<meta property="article:tag" content="源码阅读">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://schutzehades.github.io/2018/07/10/jvm-sandbox-code-2/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>jvm-sandbox源码阅读（二）——JettyCoreServer | Hades Palace</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Hades Palace</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://schutzehades.github.io/2018/07/10/jvm-sandbox-code-2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Schütze Hades">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hades Palace">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          jvm-sandbox源码阅读（二）——JettyCoreServer
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-07-10 16:36:47" itemprop="dateCreated datePublished" datetime="2018-07-10T16:36:47+08:00">2018-07-10</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-12-18 17:33:11" itemprop="dateModified" datetime="2019-12-18T17:33:11+08:00">2019-12-18</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/jvm-sandbox/" itemprop="url" rel="index">
+                    <span itemprop="name">jvm-sandbox</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2018/07/10/jvm-sandbox-code-2/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/07/10/jvm-sandbox-code-2/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+            <div class="post-description">　　com.alibaba.jvm.sandbox.core.server.jetty.JettyCoreServer类解读。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <blockquote>
+<p>下面的PlantUML图，在其上右键点击“在新标签页中打开链接(T)”食用更佳</p>
+</blockquote>
+<h3 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h3><p>　　Jetty实现的Http服务器，但其实也是整个沙箱初始化的入口，其中包括Jetty服务器、Logback以及管理沙箱各种插桩的manager的初始化。沙箱的整个运转是由事件驱动的，manager的初始化主要是在做listener的创建和注册。需要说明的是代码织入的时机，是在调用了ModuleEventWatcher.watch()方法之后，这个方法的调用是由切面开发者确定的，比如说，你可以在生命周期的loadCompleted()方法中织入。初始化的入口是bind()方法，由com.alibaba.jvm.sandbox.core.util.Initializer控制并发环境下的状态状态同步。</p>
+<h3 id="执行流程"><a href="#执行流程" class="headerlink" title="执行流程"></a>执行流程</h3><img  src=http://www.plantuml.com/plantuml/svg/vLfRKnlP4NxNhz13AcK_h5p98xo4nTwOBHnlnTJcCJM80UICHjHe84iMLqaOXAv8vduH1jR84Dj8mXSi92H-ZEUS6JtvBwJxdD5eTCUBivMgK7umC-Tqz-d--ki-FSoDUkGnkd51twtFEVogeAWEsQUAJaaSLnt6rNPrAQwlPuohfI7Pete4oVClKT5t5lJeEGq4QUJKAB_vV1adoLVaR5q_AfBm7ZcEaVW6_H3KJs8EKHv3SOu-aWyD-XHnq2UFUoQc5P7aBeopG-D3Z0GkzTBszwAgpkA2Hw8ompIunoV8wIRDVkYt6TH61DtBq6AA9EUDu-2dGFJnZFSRlo2FZVf-WiVwGR2wjMZaIfylmreXyFaoyYbWCqfVE_dTp-Rg-pwl-EGEQBrZFlX6yasC2kv_k7xoIjQnXlapkqrqOqahdHiVSwIoS1DZZFnJiCS3RduWoCA4gDowpUDYAIUf1VquuULl-nrpjhMr2FRHs9LM385uadpMwjH1IV3xXtt2cAXWr1RFIVOvoP_HhHm8aLNRQxfsmUIy8ga4n84aNvi7iQrfY8njwmsSO3V_tWoODEpngw8iAlT1WYGgVZW4IQnhbHZOhnKIniiWETgXJz_1h_Jj8Kr7j599AzTzLWsKZCepF2mx9kpLYpcjK0GjDB9ADpFaQhCVu1dU9QNYNN5Sc9RK1xwnQKaSzeoBWxDkIMHsV3ljvtX3lPKzVU6yYxfcWSmlOyn5TmLLUEIRLjoY9SwusWBBla0Sj--lef_9CH5WYUlk1kqYHbBBu0mhzS0JthO2pUp3rDKAqUhUBzm8Y41lEuIfAOWf2UUxkrGhdDf1P0SaNQkGnGmOroCeeKKm2003KAskLep34v1fensxttvGV3CU06YBntRcwIR6Kq_7o58HyGj8kNXBjdP1zgV0FF_Nv4pJp6WKE8E-Em5ZuRWyHTsJWaVMpqfDnzDA6QqGmqrx6MFfbLPE6m6qdkm-9qU9pvSx3XgFw8l7nl422Q_0Ek03hRZCeqFYYoHwO9JBrSXxkeTK0JiHrs68pX4vctVymUNaJlfUK11n7dbY40rnFHPc16UV4nvphhBBOMbKWZIgheJ18TOQu_W5oOK-1OBwQGKemF77cl1salaRE70NoUQQxJ8IIcATBX-Jy3ciSJYTJf8-mGWMTqcwI5B02p4iA8j18rim9GPse0GPsICZ5uHZSuyuED8HA2newCdbVR9x09u3mGC_397y3as_8jausLYmOI9J1bXXtDC1o0NGJ4ypy2jwc-4S15NdNo097OJgHURvGZLm09fCC26lyZCrmubSd5l9vQwjQaggkKvIk1gBplLi02aBJiOsShbeUZHgNuaBalDqFMyfrdSBfBXcRMp8ihKSdYrmIIgRUFXa2fQ1pxncXetUzIW3YYBCygtmqb8B3G7a6UZHIxY3dXoIlKrzDqlAwx_dk47VxOOWY1XQ86Yjj8Z8JRq6bvjL0A1FFfwXJhOT2a5J4UQ6G6dWv6ZjXm3Hy4VSdjtHBY8WmM4JmTzEWWHk4A08LhXgrPmBvQ-UW6p4WzDUUHNHBwgjDPVXZqO2W3JBv2xnSp4nLlogmGHP3f6FRxaSIm9WX2GAy0Ju6ApNKo4ZMmJqcGxUF0TWIgngSEdVFdmWJ24Z_Bl8qZxIx_Zdf4SIdRUu1WkuBK7aqRYDQURqZDVM0rLX5yTSPbh43MJ-8QTRB2NNI39dPA-gczdRJdLIb9stPaK_5uK_VLhv2aJO9ThL0tcGL8v4Jr31PHAEEV3dUtyPkJCmCZ8mU9zL_c1hKy5XtK1ajTpghslc8MjQ1VhHPxKO8W5T7W0lquqyhrj3CdGI3Pi61Kd2Xeuh82jnsvBMztK3vffKkr1nBUgMbNG_GoCL3XvmfOM1EilMqjLR4_ST19N5ZITPNMCzVsjFoCjv-ZpToVkOdam7XZ6rh5y2roNW8N2sGiBRPZkKVSgfaCkozf2Z2rPQjabo0oZFo6MivrZ1-86QX2AssIBMsIMqovrgO8MKLyXfYgEAeRPcl9LzjGVTu6ptInr--3C55nQub_XafwhCEdzkUCT2G5xawTOoxm_emH9qUrevCIduwo4MnnvDkzsYt_-T94p04YERj_iKJeQEIht4KcFB51fEaUX-Vuj6pB7s46C4pO64_YaKvMb9QfjO3ITe0_L6L8AHFddOmfzPKrj-xCqL55Dm2HpJgdDjEmSklwqq23A88kLL4adeaJ1Dlp42SUCae5ticz1Qpy3_eKIJu8xLGZL0m0O5ptXhv7ZDxqGG_9O0GUM6szvRTRX591hv_eInB7RSxIuq7Qnu1Bq4JzwM4iJrQwKthPlRG9fBuSYof5WYsYEWZYY8dxwSXpuBkvhGzf0yxbEy0i8V6b3es7g2YRDIP9Kaylpg0_SOo6EtJrOzyhJOttPJ-_ZKB6inmkf5F6E0SIXOq4ReRrvgXRV_A-RnDARfVL9Pf6-tzIms8sPMir85wScR3exlJlNhjpvFBx9hInaz-QA_evov3iNGPTy-rt4xkX-lcv44z3zwASazZDG3hHoqfwduq5qh6f0hxabeElZ82R8JOm3TnrEibzToT8kpmTEAg4uhSkSJTlPrMpysygBPRi33xiHxNVAz9lD-PVQrWjsnevN-BsBDoqhzzBRn3BRatArQwGMRCB1kWbz-W3buII-6Eklk8wbd5jtpZLhX5FR-gJOzuNSjFaVWTpUjicTysEWiixKXRAbtQpaQ3veoeTk7-_dp67HwqCBXiA7JDhVFwn8apwWmAhWUptXhDoYNCEN1smqprzLsf7KpaTplRB3pDq5rJuhArv0t26Ih-2JfwqWpS-9celW46olJpUGmLptmoHxLftI3VKEVtQx3qVSp-je-ULOcpqwWB2Axb5VXte2Nz_AglTinEs3MXm3YwqCvDmxbw7A695_WB0rwvVKmky7ls9jc0XU6Oxpm3ZySkDkLZceV3Ep9YFfhBRnUpa9tOIUR_gxanAqmVddDEtpSo--cOEnLWBulNPjtEXEbu5OzCs8lgcoqY9y0xM9MV1rgP0xinOUzEV4tX0S_FRPOWoD3Fzxh2esMrheP9vnQxUqztXv7547sOpCeAdxxKEJNyol-y411YDXmDw5d3nzrrciVAqDbCQ-PoLSipkoJHEmAxWPT97IrfTwMc1zDXiO-1OAY_JCAMOcptqTcf_XrMYj4iBgnwjCBAbrvf5v83ove8iklEtRfM8T2SQqOOtE41JqL8jidFU790jqTeL_051nclxP7k5cBX7RoZgtPMfnWX_CjupxszU2_afUicVTvfoHH5STwatOsJiCfaxJ_FlZmmG_3zqRkTQVlQyt7MixKUIx3WwWgdIvDJtfScDpOK7IxCjcRoUkgw0XFfFVEPu63Z0kINoI9Txotn16JxQDTwvIfzv28crzTspPokMw7w2EBx-XofEbxNeSPodL6DKySN-RmQrbw0okVEDf6vvhpUhOFGkEy9VjiS-vEDdDtM8hQVv3dmE8njVuwWeKL4zEKDcV_Cum-QzsagaxHT8943nbNrb-mJ_kmVrgHwDO1oI_efv2DfZ8cYsceYVUhlgd_0000>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/jvm-sandbox/" rel="tag"># jvm-sandbox</a>
+              <a href="/tags/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/" rel="tag"># 源码阅读</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/06/19/jvm-sandbox-code-1/" rel="prev" title="jvm-sandbox源码阅读（一）——CoreLauncher&AgentLauncher">
+      <i class="fa fa-chevron-left"></i> jvm-sandbox源码阅读（一）——CoreLauncher&AgentLauncher
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2018/07/13/jvm-sandbox-code-3/" rel="next" title="jvm-sandbox源码阅读（三）——EventWatchBuilder">
+      jvm-sandbox源码阅读（三）——EventWatchBuilder <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#概述"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#执行流程"><span class="nav-number">2.</span> <span class="nav-text">执行流程</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Schütze Hades</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">10</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Schütze Hades</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.1.1
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.6.0
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script>
+  function loadCount() {
+    var d = document, s = d.createElement('script');
+    s.src = 'https://hadespalace.disqus.com/count.js';
+    s.id = 'dsq-count-scr';
+    (d.head || d.body).appendChild(s);
+  }
+  // defer loading until the whole page loading is completed
+  window.addEventListener('load', loadCount, false);
+</script>
+<script>
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: {page: {
+            url: "https://schutzehades.github.io/2018/07/10/jvm-sandbox-code-2/",
+            identifier: "2018/07/10/jvm-sandbox-code-2/",
+            title: "jvm-sandbox源码阅读（二）——JettyCoreServer"
+          }
+        }
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://hadespalace.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+</body>
+</html>
