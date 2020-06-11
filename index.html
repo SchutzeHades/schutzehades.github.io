@@ -13,38 +13,12 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
-
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
-  var NexT = window.NexT || {};
-  var CONFIG = {
-    hostname: new URL('https://schutzehades.github.io').hostname,
-    root: '/',
-    scheme: 'Pisces',
-    version: '7.6.0',
-    exturl: false,
-    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
-    copycode: {"enable":true,"show_result":true,"style":null},
-    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
-    bookmark: {"enable":false,"color":"#222","save":"auto"},
-    fancybox: false,
-    mediumzoom: false,
-    lazyload: false,
-    pangu: false,
-    comments: {"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},
-    algolia: {
-      appID: '',
-      apiKey: '',
-      indexName: '',
-      hits: {"per_page":10},
-      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
-    },
-    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
-    path: '',
-    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
-  };
-</script>
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"schutzehades.github.io","root":"/","scheme":"Pisces","version":"8.0.0-rc.3","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
 
   <meta property="og:type" content="website">
 <meta property="og:title" content="Hades Palace">
@@ -61,8 +35,9 @@
   // https://hexo.io/docs/variables.html
   CONFIG.page = {
     sidebar: "",
-    isHome: true,
-    isPost: false
+    isHome : true,
+    isPost : false,
+    lang   : 'zh-CN'
   };
 </script>
 
@@ -105,43 +80,32 @@
 
     <header class="header" itemscope itemtype="http://schema.org/WPHeader">
       <div class="header-inner"><div class="site-brand-container">
-  <div class="site-meta">
-
-    <div>
-      <a href="/" class="brand" rel="start">
-        <span class="logo-line-before"><i></i></span>
-        <span class="site-title">Hades Palace</span>
-        <span class="logo-line-after"><i></i></span>
-      </a>
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
     </div>
   </div>
 
-  <div class="site-nav-toggle">
-    <div class="toggle" aria-label="切换导航栏">
-      <span class="toggle-line toggle-line-first"></span>
-      <span class="toggle-line toggle-line-middle"></span>
-      <span class="toggle-line toggle-line-last"></span>
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Hades Palace</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
     </div>
   </div>
 </div>
 
 
-<nav class="site-nav">
-  
-  <ul id="menu" class="menu">
-        <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
 
-  </li>
-        <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
 
-  </li>
-  </ul>
 
-</nav>
 </div>
     </header>
 
@@ -157,14 +121,12 @@
         <div class="content-wrap">
           
 
-          <div class="content">
+          <div class="content index posts-expand">
             
-
-  <div class="posts-expand">
-        
+      
   
   
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://schutzehades.github.io/2020/06/04/syntactic-sugar-after-java-8/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -177,15 +139,15 @@
       <meta itemprop="name" content="Hades Palace">
     </span>
       <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
+        <h2 class="post-title" itemprop="name headline">
           
             <a href="/2020/06/04/syntactic-sugar-after-java-8/" class="post-title-link" itemprop="url">Java 8后，新增的语法糖们</a>
-        </h1>
+        </h2>
 
         <div class="post-meta">
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
 
@@ -193,20 +155,18 @@
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
+                  <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
                 <time title="修改时间：2020-06-11 19:16:21" itemprop="dateModified" datetime="2020-06-11T19:16:21+08:00">2020-06-11</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
+                <i class="far fa-folder"></i>
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Java%E6%B4%BB%E4%B9%85%E8%A7%81/" itemprop="url" rel="index">
-                    <span itemprop="name">Java活久见</span>
-                  </a>
+                  <a href="/categories/Java%E6%B4%BB%E4%B9%85%E8%A7%81/" itemprop="url" rel="index"><span itemprop="name">Java活久见</span></a>
                 </span>
             </span>
 
@@ -215,11 +175,11 @@
   <span class="post-meta-item">
     
       <span class="post-meta-item-icon">
-        <i class="fa fa-comment-o"></i>
+        <i class="far fa-comment"></i>
       </span>
       <span class="post-meta-item-text">Disqus：</span>
     
-    <a title="disqus" href="/2020/06/04/syntactic-sugar-after-java-8/#comments" itemprop="discussionUrl">
+    <a title="disqus" href="/2020/06/04/syntactic-sugar-after-java-8/#disqus_thread" itemprop="discussionUrl">
       <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2020/06/04/syntactic-sugar-after-java-8/" itemprop="commentCount"></span>
     </a>
   </span>
@@ -235,7 +195,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          　　最近听到了太多的关于要不要从Java 8往上升级的争论，而争论的焦点总是集中在Java 8已经能满足现有需求，升级会引入成本，而带来的好处又看不见、用不上。那么这个命题真的成立吗？本文将从语法糖的角度对Java 8之后加入的新语法特性一一列举并分析，以期说明，从日常写代码的体验来讲，升级还是非常香的。
+          <p>　　最近听到了太多的关于要不要从Java 8往上升级的争论，而争论的焦点总是集中在Java 8已经能满足现有需求，升级会引入成本，而带来的好处又看不见、用不上。那么这个命题真的成立吗？本文将从语法糖的角度对Java 8之后加入的新语法特性一一列举并分析，以期说明，从日常写代码的体验来讲，升级还是非常香的。</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2020/06/04/syntactic-sugar-after-java-8/">
@@ -258,10 +218,10 @@
   
   
 
-        
+      
   
   
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://schutzehades.github.io/2019/12/18/hexo-next-abc/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -274,15 +234,15 @@
       <meta itemprop="name" content="Hades Palace">
     </span>
       <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
+        <h2 class="post-title" itemprop="name headline">
           
             <a href="/2019/12/18/hexo-next-abc/" class="post-title-link" itemprop="url">NexT ABC</a>
-        </h1>
+        </h2>
 
         <div class="post-meta">
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
 
@@ -290,20 +250,18 @@
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
+                  <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
                 <time title="修改时间：2019-12-19 10:54:03" itemprop="dateModified" datetime="2019-12-19T10:54:03+08:00">2019-12-19</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
+                <i class="far fa-folder"></i>
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Hexo/" itemprop="url" rel="index">
-                    <span itemprop="name">Hexo</span>
-                  </a>
+                  <a href="/categories/Hexo/" itemprop="url" rel="index"><span itemprop="name">Hexo</span></a>
                 </span>
             </span>
 
@@ -312,11 +270,11 @@
   <span class="post-meta-item">
     
       <span class="post-meta-item-icon">
-        <i class="fa fa-comment-o"></i>
+        <i class="far fa-comment"></i>
       </span>
       <span class="post-meta-item-text">Disqus：</span>
     
-    <a title="disqus" href="/2019/12/18/hexo-next-abc/#comments" itemprop="discussionUrl">
+    <a title="disqus" href="/2019/12/18/hexo-next-abc/#disqus_thread" itemprop="discussionUrl">
       <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2019/12/18/hexo-next-abc/" itemprop="commentCount"></span>
     </a>
   </span>
@@ -332,7 +290,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          　　自从2017年心血来潮建了这个博客之后，写着写着就弃坑了。最近心血终于又一次迎来了潮起，晃眼已经快3年过去了，NexT主题版本版本已经升出去2个大版本了，想要升级吧，初次建站配置NexT的细节早就不记得了。不过也好，从头再来一次，正好记录一下。
+          <p>　　自从2017年心血来潮建了这个博客之后，写着写着就弃坑了。最近心血终于又一次迎来了潮起，晃眼已经快3年过去了，NexT主题版本版本已经升出去2个大版本了，想要升级吧，初次建站配置NexT的细节早就不记得了。不过也好，从头再来一次，正好记录一下。</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2019/12/18/hexo-next-abc/">
@@ -355,10 +313,10 @@
   
   
 
-        
+      
   
   
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://schutzehades.github.io/2019/12/17/jdk-bugs/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -371,15 +329,15 @@
       <meta itemprop="name" content="Hades Palace">
     </span>
       <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
+        <h2 class="post-title" itemprop="name headline">
           
             <a href="/2019/12/17/jdk-bugs/" class="post-title-link" itemprop="url">活久见——我经历的JDK bug们</a>
-        </h1>
+        </h2>
 
         <div class="post-meta">
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
 
@@ -387,20 +345,18 @@
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
+                  <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
                 <time title="修改时间：2020-06-04 15:53:25" itemprop="dateModified" datetime="2020-06-04T15:53:25+08:00">2020-06-04</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
+                <i class="far fa-folder"></i>
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Java%E6%B4%BB%E4%B9%85%E8%A7%81/" itemprop="url" rel="index">
-                    <span itemprop="name">Java活久见</span>
-                  </a>
+                  <a href="/categories/Java%E6%B4%BB%E4%B9%85%E8%A7%81/" itemprop="url" rel="index"><span itemprop="name">Java活久见</span></a>
                 </span>
             </span>
 
@@ -409,11 +365,11 @@
   <span class="post-meta-item">
     
       <span class="post-meta-item-icon">
-        <i class="fa fa-comment-o"></i>
+        <i class="far fa-comment"></i>
       </span>
       <span class="post-meta-item-text">Disqus：</span>
     
-    <a title="disqus" href="/2019/12/17/jdk-bugs/#comments" itemprop="discussionUrl">
+    <a title="disqus" href="/2019/12/17/jdk-bugs/#disqus_thread" itemprop="discussionUrl">
       <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2019/12/17/jdk-bugs/" itemprop="commentCount"></span>
     </a>
   </span>
@@ -429,7 +385,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          　　一直对传说中JDK的bug充满了疑惑与不解，寻思着都是神一样的人物写的代码，就算有bug，应该也是需要通过某种高深莫测的姿势才能测试出来。万万没有想到我等蒟蒻在日常工作中写的普普通通的代码也会触发出一地（虽然目前只发现了两个，但是我相信活久见）的bug。
+          <p>　　一直对传说中JDK的bug充满了疑惑与不解，寻思着都是神一样的人物写的代码，就算有bug，应该也是需要通过某种高深莫测的姿势才能测试出来。万万没有想到我等蒟蒻在日常工作中写的普普通通的代码也会触发出一地（虽然目前只发现了两个，但是我相信活久见）的bug。</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2019/12/17/jdk-bugs/">
@@ -452,10 +408,10 @@
   
   
 
-        
+      
   
   
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://schutzehades.github.io/2018/07/13/jvm-sandbox-code-3/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -468,15 +424,15 @@
       <meta itemprop="name" content="Hades Palace">
     </span>
       <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
+        <h2 class="post-title" itemprop="name headline">
           
             <a href="/2018/07/13/jvm-sandbox-code-3/" class="post-title-link" itemprop="url">jvm-sandbox源码阅读（三）——EventWatchBuilder</a>
-        </h1>
+        </h2>
 
         <div class="post-meta">
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
 
@@ -484,20 +440,18 @@
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
+                  <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
                 <time title="修改时间：2019-12-18 17:33:11" itemprop="dateModified" datetime="2019-12-18T17:33:11+08:00">2019-12-18</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
+                <i class="far fa-folder"></i>
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/jvm-sandbox/" itemprop="url" rel="index">
-                    <span itemprop="name">jvm-sandbox</span>
-                  </a>
+                  <a href="/categories/jvm-sandbox/" itemprop="url" rel="index"><span itemprop="name">jvm-sandbox</span></a>
                 </span>
             </span>
 
@@ -506,11 +460,11 @@
   <span class="post-meta-item">
     
       <span class="post-meta-item-icon">
-        <i class="fa fa-comment-o"></i>
+        <i class="far fa-comment"></i>
       </span>
       <span class="post-meta-item-text">Disqus：</span>
     
-    <a title="disqus" href="/2018/07/13/jvm-sandbox-code-3/#comments" itemprop="discussionUrl">
+    <a title="disqus" href="/2018/07/13/jvm-sandbox-code-3/#disqus_thread" itemprop="discussionUrl">
       <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/07/13/jvm-sandbox-code-3/" itemprop="commentCount"></span>
     </a>
   </span>
@@ -526,7 +480,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          　　自定义切面的工作流程。
+          <p>　　自定义切面的工作流程。</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2018/07/13/jvm-sandbox-code-3/">
@@ -549,10 +503,10 @@
   
   
 
-        
+      
   
   
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://schutzehades.github.io/2018/07/10/jvm-sandbox-code-2/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -565,15 +519,15 @@
       <meta itemprop="name" content="Hades Palace">
     </span>
       <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
+        <h2 class="post-title" itemprop="name headline">
           
             <a href="/2018/07/10/jvm-sandbox-code-2/" class="post-title-link" itemprop="url">jvm-sandbox源码阅读（二）——JettyCoreServer</a>
-        </h1>
+        </h2>
 
         <div class="post-meta">
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
 
@@ -581,20 +535,18 @@
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
+                  <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
                 <time title="修改时间：2019-12-18 17:33:11" itemprop="dateModified" datetime="2019-12-18T17:33:11+08:00">2019-12-18</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
+                <i class="far fa-folder"></i>
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/jvm-sandbox/" itemprop="url" rel="index">
-                    <span itemprop="name">jvm-sandbox</span>
-                  </a>
+                  <a href="/categories/jvm-sandbox/" itemprop="url" rel="index"><span itemprop="name">jvm-sandbox</span></a>
                 </span>
             </span>
 
@@ -603,11 +555,11 @@
   <span class="post-meta-item">
     
       <span class="post-meta-item-icon">
-        <i class="fa fa-comment-o"></i>
+        <i class="far fa-comment"></i>
       </span>
       <span class="post-meta-item-text">Disqus：</span>
     
-    <a title="disqus" href="/2018/07/10/jvm-sandbox-code-2/#comments" itemprop="discussionUrl">
+    <a title="disqus" href="/2018/07/10/jvm-sandbox-code-2/#disqus_thread" itemprop="discussionUrl">
       <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/07/10/jvm-sandbox-code-2/" itemprop="commentCount"></span>
     </a>
   </span>
@@ -623,7 +575,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          　　com.alibaba.jvm.sandbox.core.server.jetty.JettyCoreServer类解读。
+          <p>　　com.alibaba.jvm.sandbox.core.server.jetty.JettyCoreServer类解读。</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2018/07/10/jvm-sandbox-code-2/">
@@ -646,10 +598,10 @@
   
   
 
-        
+      
   
   
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://schutzehades.github.io/2018/06/19/jvm-sandbox-code-1/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -662,15 +614,15 @@
       <meta itemprop="name" content="Hades Palace">
     </span>
       <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
+        <h2 class="post-title" itemprop="name headline">
           
             <a href="/2018/06/19/jvm-sandbox-code-1/" class="post-title-link" itemprop="url">jvm-sandbox源码阅读（一）——CoreLauncher&AgentLauncher</a>
-        </h1>
+        </h2>
 
         <div class="post-meta">
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
 
@@ -678,20 +630,18 @@
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
+                  <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
                 <time title="修改时间：2019-12-18 17:33:11" itemprop="dateModified" datetime="2019-12-18T17:33:11+08:00">2019-12-18</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
+                <i class="far fa-folder"></i>
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/jvm-sandbox/" itemprop="url" rel="index">
-                    <span itemprop="name">jvm-sandbox</span>
-                  </a>
+                  <a href="/categories/jvm-sandbox/" itemprop="url" rel="index"><span itemprop="name">jvm-sandbox</span></a>
                 </span>
             </span>
 
@@ -700,11 +650,11 @@
   <span class="post-meta-item">
     
       <span class="post-meta-item-icon">
-        <i class="fa fa-comment-o"></i>
+        <i class="far fa-comment"></i>
       </span>
       <span class="post-meta-item-text">Disqus：</span>
     
-    <a title="disqus" href="/2018/06/19/jvm-sandbox-code-1/#comments" itemprop="discussionUrl">
+    <a title="disqus" href="/2018/06/19/jvm-sandbox-code-1/#disqus_thread" itemprop="discussionUrl">
       <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/06/19/jvm-sandbox-code-1/" itemprop="commentCount"></span>
     </a>
   </span>
@@ -720,7 +670,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          　　com.alibaba.jvm.sandbox.core.CoreLauncher类和com.alibaba.jvm.sandbox.agent.AgentLauncher类解读。
+          <p>　　com.alibaba.jvm.sandbox.core.CoreLauncher类和com.alibaba.jvm.sandbox.agent.AgentLauncher类解读。</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2018/06/19/jvm-sandbox-code-1/">
@@ -743,10 +693,10 @@
   
   
 
-        
+      
   
   
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://schutzehades.github.io/2017/12/17/lombok-pearls/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -759,15 +709,15 @@
       <meta itemprop="name" content="Hades Palace">
     </span>
       <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
+        <h2 class="post-title" itemprop="name headline">
           
             <a href="/2017/12/17/lombok-pearls/" class="post-title-link" itemprop="url">Lombok Pearls</a>
-        </h1>
+        </h2>
 
         <div class="post-meta">
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
 
@@ -775,20 +725,18 @@
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
+                  <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
                 <time title="修改时间：2019-12-18 17:33:11" itemprop="dateModified" datetime="2019-12-18T17:33:11+08:00">2019-12-18</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
+                <i class="far fa-folder"></i>
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Lombok/" itemprop="url" rel="index">
-                    <span itemprop="name">Lombok</span>
-                  </a>
+                  <a href="/categories/Lombok/" itemprop="url" rel="index"><span itemprop="name">Lombok</span></a>
                 </span>
             </span>
 
@@ -797,11 +745,11 @@
   <span class="post-meta-item">
     
       <span class="post-meta-item-icon">
-        <i class="fa fa-comment-o"></i>
+        <i class="far fa-comment"></i>
       </span>
       <span class="post-meta-item-text">Disqus：</span>
     
-    <a title="disqus" href="/2017/12/17/lombok-pearls/#comments" itemprop="discussionUrl">
+    <a title="disqus" href="/2017/12/17/lombok-pearls/#disqus_thread" itemprop="discussionUrl">
       <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/12/17/lombok-pearls/" itemprop="commentCount"></span>
     </a>
   </span>
@@ -817,7 +765,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          　　Lombok珠玑（划掉），记录一些写成一篇文章太浪费（其实是写不出来），不写又容易忘的关于使用Lombok辅助开发的小点。
+          <p>　　Lombok珠玑（划掉），记录一些写成一篇文章太浪费（其实是写不出来），不写又容易忘的关于使用Lombok辅助开发的小点。</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2017/12/17/lombok-pearls/">
@@ -840,10 +788,10 @@
   
   
 
-        
+      
   
   
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://schutzehades.github.io/2017/03/28/git-abc/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -856,15 +804,15 @@
       <meta itemprop="name" content="Hades Palace">
     </span>
       <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
+        <h2 class="post-title" itemprop="name headline">
           
             <a href="/2017/03/28/git-abc/" class="post-title-link" itemprop="url">Git ABC</a>
-        </h1>
+        </h2>
 
         <div class="post-meta">
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
 
@@ -872,20 +820,18 @@
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
+                  <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
                 <time title="修改时间：2019-12-18 17:33:11" itemprop="dateModified" datetime="2019-12-18T17:33:11+08:00">2019-12-18</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
+                <i class="far fa-folder"></i>
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/GIT/" itemprop="url" rel="index">
-                    <span itemprop="name">GIT</span>
-                  </a>
+                  <a href="/categories/GIT/" itemprop="url" rel="index"><span itemprop="name">GIT</span></a>
                 </span>
             </span>
 
@@ -894,11 +840,11 @@
   <span class="post-meta-item">
     
       <span class="post-meta-item-icon">
-        <i class="fa fa-comment-o"></i>
+        <i class="far fa-comment"></i>
       </span>
       <span class="post-meta-item-text">Disqus：</span>
     
-    <a title="disqus" href="/2017/03/28/git-abc/#comments" itemprop="discussionUrl">
+    <a title="disqus" href="/2017/03/28/git-abc/#disqus_thread" itemprop="discussionUrl">
       <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/03/28/git-abc/" itemprop="commentCount"></span>
     </a>
   </span>
@@ -914,7 +860,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          　　零基础，唔，其实还是要有一些基础，好歹你要知道Git是什么，为什么要用Git，然后我来教你怎么安装Git，怎么配置Git，以及一些常见的Git命令。推荐参考书目：《Pro Git》，这书可以当字典用，哪里不会查哪里。
+          <p>　　零基础，唔，其实还是要有一些基础，好歹你要知道Git是什么，为什么要用Git，然后我来教你怎么安装Git，怎么配置Git，以及一些常见的Git命令。推荐参考书目：《Pro Git》，这书可以当字典用，哪里不会查哪里。</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2017/03/28/git-abc/">
@@ -937,10 +883,10 @@
   
   
 
-        
+      
   
   
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://schutzehades.github.io/2017/03/28/across-the-gfw/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -953,15 +899,15 @@
       <meta itemprop="name" content="Hades Palace">
     </span>
       <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
+        <h2 class="post-title" itemprop="name headline">
           
             <a href="/2017/03/28/across-the-gfw/" class="post-title-link" itemprop="url">Across the GFW</a>
-        </h1>
+        </h2>
 
         <div class="post-meta">
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
 
@@ -969,20 +915,18 @@
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
+                  <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
                 <time title="修改时间：2019-12-18 17:33:11" itemprop="dateModified" datetime="2019-12-18T17:33:11+08:00">2019-12-18</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
+                <i class="far fa-folder"></i>
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E7%A7%91%E5%AD%A6%E4%B8%8A%E7%BD%91/" itemprop="url" rel="index">
-                    <span itemprop="name">科学上网</span>
-                  </a>
+                  <a href="/categories/%E7%A7%91%E5%AD%A6%E4%B8%8A%E7%BD%91/" itemprop="url" rel="index"><span itemprop="name">科学上网</span></a>
                 </span>
             </span>
 
@@ -991,11 +935,11 @@
   <span class="post-meta-item">
     
       <span class="post-meta-item-icon">
-        <i class="fa fa-comment-o"></i>
+        <i class="far fa-comment"></i>
       </span>
       <span class="post-meta-item-text">Disqus：</span>
     
-    <a title="disqus" href="/2017/03/28/across-the-gfw/#comments" itemprop="discussionUrl">
+    <a title="disqus" href="/2017/03/28/across-the-gfw/#disqus_thread" itemprop="discussionUrl">
       <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/03/28/across-the-gfw/" itemprop="commentCount"></span>
     </a>
   </span>
@@ -1011,7 +955,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          　　这个好像没什么好说的，大家都懂，在中国大陆浏览Google、Youtube、Facebook、Twitter等的准备工作。我这么抠门要讲的当然是免费翻墙了。
+          <p>　　这个好像没什么好说的，大家都懂，在中国大陆浏览Google、Youtube、Facebook、Twitter等的准备工作。我这么抠门要讲的当然是免费翻墙了。</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2017/03/28/across-the-gfw/">
@@ -1034,10 +978,10 @@
   
   
 
-        
+      
   
   
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://schutzehades.github.io/2017/03/28/hexo-abc/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1050,15 +994,15 @@
       <meta itemprop="name" content="Hades Palace">
     </span>
       <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
+        <h2 class="post-title" itemprop="name headline">
           
             <a href="/2017/03/28/hexo-abc/" class="post-title-link" itemprop="url">Hexo ABC</a>
-        </h1>
+        </h2>
 
         <div class="post-meta">
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
 
@@ -1066,20 +1010,18 @@
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
+                  <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
                 <time title="修改时间：2019-12-19 12:30:35" itemprop="dateModified" datetime="2019-12-19T12:30:35+08:00">2019-12-19</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
+                <i class="far fa-folder"></i>
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Hexo/" itemprop="url" rel="index">
-                    <span itemprop="name">Hexo</span>
-                  </a>
+                  <a href="/categories/Hexo/" itemprop="url" rel="index"><span itemprop="name">Hexo</span></a>
                 </span>
             </span>
 
@@ -1088,11 +1030,11 @@
   <span class="post-meta-item">
     
       <span class="post-meta-item-icon">
-        <i class="fa fa-comment-o"></i>
+        <i class="far fa-comment"></i>
       </span>
       <span class="post-meta-item-text">Disqus：</span>
     
-    <a title="disqus" href="/2017/03/28/hexo-abc/#comments" itemprop="discussionUrl">
+    <a title="disqus" href="/2017/03/28/hexo-abc/#disqus_thread" itemprop="discussionUrl">
       <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/03/28/hexo-abc/" itemprop="commentCount"></span>
     </a>
   </span>
@@ -1108,7 +1050,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          　　从零开始（嗯。。。这个零的定义好难呀。。。我假设你能通过计算机一级考试，了解GitHub常见术语、常用功能——的位置，了解Git的基本概念），搭建托管于GitHub，基于Hexo的博客。内容涉及Hexo的安装、初始化、生成、本地调试以及部署到GitHub全过程。鼓励阅读官方文档（https://hexo.io/zh-cn/docs/），本教程仅作为官方文档的归纳与补充。
+          <p>　　从零开始（嗯。。。这个零的定义好难呀。。。我假设你能通过计算机一级考试，了解GitHub常见术语、常用功能——的位置，了解Git的基本概念），搭建托管于GitHub，基于Hexo的博客。内容涉及Hexo的安装、初始化、生成、本地调试以及部署到GitHub全过程。鼓励阅读官方文档（https://hexo.io/zh-cn/docs/），本教程仅作为官方文档的归纳与补充。</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2017/03/28/hexo-abc/">
@@ -1131,7 +1073,6 @@
   
   
 
-  </div>
 
   
   <nav class="pagination">
@@ -1145,7 +1086,7 @@
 
 <script>
   window.addEventListener('tabs:register', () => {
-    let activeClass = CONFIG.comments.activeClass;
+    let { activeClass } = CONFIG.comments;
     if (CONFIG.comments.storage) {
       activeClass = localStorage.getItem('comments_active') || activeClass;
     }
@@ -1199,8 +1140,7 @@
 <div class="site-state-wrap motion-element">
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
-          <a href="/archives/">
-        
+          <a href="/archives">
           <span class="site-state-item-count">11</span>
           <span class="site-state-item-name">日志</span>
         </a>
@@ -1234,19 +1174,18 @@
       <div class="footer-inner">
         
 
+        
+
 <div class="copyright">
   
   &copy; 
   <span itemprop="copyrightYear">2020</span>
   <span class="with-love">
-    <i class="fa fa-user"></i>
+    <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Schütze Hades</span>
 </div>
-  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.2.1
-  </div>
-  <span class="post-meta-divider">|</span>
-  <div class="theme-info">主题 – <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.6.0
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
   </div>
 
         
