@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('https://schutzehades.github.io').hostname,
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.6.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":true,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    comments: {"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
+  };
+</script>
+
+  <meta name="description" content="最近听到了太多的关于要不要从Java 8往上升级的争论，而争论的焦点总是集中在Java 8已经能满足现有需求，升级会引入成本，而带来的好处又看不见、用不上。那么这个命题真的成立吗？本文将从语法糖的角度对Java 8之后加入的新语法特性一一列举并分析，以期说明，从日常写代码的体验来讲，升级还是非常香的。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java 8后，新增的语法糖们">
+<meta property="og:url" content="https://schutzehades.github.io/2020/06/04/syntactic-sugar-after-java-8/index.html">
+<meta property="og:site_name" content="Hades Palace">
+<meta property="og:description" content="最近听到了太多的关于要不要从Java 8往上升级的争论，而争论的焦点总是集中在Java 8已经能满足现有需求，升级会引入成本，而带来的好处又看不见、用不上。那么这个命题真的成立吗？本文将从语法糖的角度对Java 8之后加入的新语法特性一一列举并分析，以期说明，从日常写代码的体验来讲，升级还是非常香的。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-06-04T07:34:19.000Z">
+<meta property="article:modified_time" content="2020-06-11T11:16:21.818Z">
+<meta property="article:author" content="Schütze Hades">
+<meta property="article:tag" content="Note">
+<meta property="article:tag" content="Java">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://schutzehades.github.io/2020/06/04/syntactic-sugar-after-java-8/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>Java 8后，新增的语法糖们 | Hades Palace</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Hades Palace</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://schutzehades.github.io/2020/06/04/syntactic-sugar-after-java-8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Schütze Hades">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hades Palace">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Java 8后，新增的语法糖们
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-06-04 15:34:19" itemprop="dateCreated datePublished" datetime="2020-06-04T15:34:19+08:00">2020-06-04</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-06-11 19:16:21" itemprop="dateModified" datetime="2020-06-11T19:16:21+08:00">2020-06-11</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java%E6%B4%BB%E4%B9%85%E8%A7%81/" itemprop="url" rel="index">
+                    <span itemprop="name">Java活久见</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2020/06/04/syntactic-sugar-after-java-8/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2020/06/04/syntactic-sugar-after-java-8/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+            <div class="post-description">　　最近听到了太多的关于要不要从Java 8往上升级的争论，而争论的焦点总是集中在Java 8已经能满足现有需求，升级会引入成本，而带来的好处又看不见、用不上。那么这个命题真的成立吗？本文将从语法糖的角度对Java 8之后加入的新语法特性一一列举并分析，以期说明，从日常写代码的体验来讲，升级还是非常香的。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><p>　　最近听到了太多的关于要不要从Java 8往上升级的争论，而争论的焦点总是集中在Java 8已经能满足现有需求，升级会引入成本，而带来的好处又看不见、用不上。那么这个命题真的成立吗？本文将从语法糖的角度对Java 8之后加入的新语法特性一一列举并分析，以期说明，从日常写代码的体验来讲，升级还是非常香的。在这里强调一点，这不是一篇完整地发布日志，本文只会从我天天写代码的角度，列举我认为很香的、引入之后能让我写代码写得更爽更开心的语法糖（包括但不限于language feature），目的不是为了科普，而是为了在要不要从Java 8往上升级的争论中获胜。</p>
+<h3 id="论据列举"><a href="#论据列举" class="headerlink" title="论据列举"></a>论据列举</h3><h4 id="Java-9"><a href="#Java-9" class="headerlink" title="Java 9"></a>Java 9</h4><h5 id="Flow-API"><a href="#Flow-API" class="headerlink" title="Flow API"></a>Flow API</h5><p>这个可以说是Java 9的重磅功能更新了，它其实已经不是语法糖那么简单的东西，而是定义了一整套的Reactive编程规范。一个典型的用法就是过去Guava中EventBus的类似场景。详细用法看<a href="https://thepracticaldeveloper.com/2018/01/31/reactive-programming-java-9-flow/" target="_blank" rel="noopener">这里</a>。</p>
+<h5 id="CompletableFuture优化"><a href="#CompletableFuture优化" class="headerlink" title="CompletableFuture优化"></a>CompletableFuture优化</h5><p>Java 8引入了CompletableFuture之后，Guava的ListenableFuture就可以扔了。CompletableFuture可惜就可惜在生得太晚，很多的第三方组件在涉及异步时要么用的是Guava，要么就是自己写的XXXFuture（Elasticsearch Java High Level REST Client说的就是你），搞得我到处写桥接器，但是这并不影响CompletableFuture真香的事实。到了Java 9之后，Oracle又为CompletableFuture增加了一组非常实用的方法，力度可以说是非常的大。不过还是想吐几个槽，加一个<code>allAsList</code>方法是有多难啊！！！加一个<code>supply</code>方法不带<code>async</code>的那种是有多难啊！！！简单讲几个我等着用的方法（完整方法列表看<a href="https://www.baeldung.com/java-9-completablefuture" target="_blank" rel="noopener">这里</a>）：</p>
+<h6 id="java-util-concurrent-CompletableFuture-copy"><a href="#java-util-concurrent-CompletableFuture-copy" class="headerlink" title="java.util.concurrent.CompletableFuture#copy"></a>java.util.concurrent.CompletableFuture#copy</h6><p>这个方法会将返回一个类似于当前CompletableFuture对象深拷贝的对象，它的一切行为（正常完成或抛异常）与当前对象相同。它为什么吸引我呢？正如这个<code>copy</code>方法的注释所讲：</p>
+<blockquote>
+<p>This method may be useful as a form of “defensive copying”, to prevent clients from completing, while still being able to arrange dependent actions.</p>
+</blockquote>
+<p>假设我是一个事件库的作者，我定义了一个interface用于在事件到达时加载处理事件所需的数据，如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@FunctionalInterface</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">ActorEngineDataLoader</span>&lt;<span class="title">CompletableFuture</span>&lt;<span class="title">T</span>&gt;&gt; <span class="keyword">extends</span> <span class="title">BiFunction</span>&lt;<span class="title">String</span>, <span class="title">String</span>, <span class="title">T</span>&gt; </span>&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个interface只有一个方法，将会返回一个加载数据的CompletableFuture，这个interface的实现类将由库的使用者定义。每一次事件到达时，事件库都将会把上述loader返回的CompletableFuture对象和事件对象传给使用者定义的监听器。考虑使用者定义了多个监听器，监听的都是同一个事件，那么问题来了，如果某一个监听器淘气，对这个CompletableFuture做了什么手脚，比如篡改了数据或者强行中止了CompletableFuture的执行，那么其它的监听器也会悲剧，拿到的都是被篡改了的CompletableFuture对象。如果有了<code>copy</code>方法，那么一切都将变得不同，事件库传给监听器的都是CompletableFuture对象的副本，而妙的是，这个副本状态、数据与正本完全一致，任凭监听器如果篡改，都不会造成大面积的影响。</p>
+<h6 id="java-util-concurrent-CompletableFuture-minimalCompletionStage"><a href="#java-util-concurrent-CompletableFuture-minimalCompletionStage" class="headerlink" title="java.util.concurrent.CompletableFuture#minimalCompletionStage"></a>java.util.concurrent.CompletableFuture#minimalCompletionStage</h6><p>上面说到，每一次事件库都传给监听器一个CompletableFuture对象的副本，其实还有一个选项，我要是能传给监听器一个immutable的CompletableFuture不也很美妙。<code>minimalCompletionStage</code>方法便可以实现这个美妙的愿望。这个方法返回的是一个CompletionStage，从方法层面杜绝了篡改数据的风险，同时，它虽然也是一个CompletableFuture，但是它重写了所有非CompletionStage方法的实现，通通抛<code>UnsupportedOperationException</code>，只管放心大胆地暴露出去。需要注意的是，这里说的immutable仅仅是说CompletableFuture的数据不会变，但是其调用链（例如加whenComplete之类的）依然是可变的。</p>
+<h6 id="java-util-concurrent-CompletableFuture-orTimeout"><a href="#java-util-concurrent-CompletableFuture-orTimeout" class="headerlink" title="java.util.concurrent.CompletableFuture#orTimeout"></a>java.util.concurrent.CompletableFuture#orTimeout</h6><p>CompletableFuture这玩意儿一直有个槽点，假设我的CompletableFuture是由一条调用链组成的，那么我要么一直往链条上加环，然后在最后来<code>get</code>整条链条的结果时加一个超时来控制整个链条的执行时长；但是我要是想要控制其中某一环的执行时长，我就得<code>get</code>一发，然后try-catch一把<code>TimeoutException</code>，问题是，如此一来，这个环就成了一个阻塞环，我还得想办法解决这个问题，还不太好解。这个时候，<code>orTimeout</code>这个神器就显得非常重要了，没有try-catch，保持CompletableFuture的一贯处理风格，非常地fluent。</p>
+<h6 id="java-util-concurrent-CompletableFuture-orTimeout-1"><a href="#java-util-concurrent-CompletableFuture-orTimeout-1" class="headerlink" title="java.util.concurrent.CompletableFuture#orTimeout"></a>java.util.concurrent.CompletableFuture#orTimeout</h6><p>这个就更美妙了，考虑一个场景，我要从Redis获取数据，但是我有一个预期的等待时间，如果超过了这个时间我还拿不到数，我就认为Redis太垃圾了，我就返回<code>null</code>。这要是搁Java 8怎么玩呢？try-catch一个<code>TimeoutException</code>肯定少不了，视场景需要，可能还得自己new一个CompletableFuture对象，把值装进去再返回出去。现在有了<code>completeOnTimeout</code>方法，一切都变得大不一样，一个方法，解决你的所有难题。</p>
+<h6 id="static-java-util-concurrent-CompletableFuture-failedFuture"><a href="#static-java-util-concurrent-CompletableFuture-failedFuture" class="headerlink" title="static java.util.concurrent.CompletableFuture#failedFuture"></a>static java.util.concurrent.CompletableFuture#failedFuture</h6><p>这个没什么好说的，在Java 8中无数次地问天问大地，为什么只有<code>completedFuture</code>方法，要想构造一个抛异常的CompletableFuture就只能先new后塞，现在，它来了，它终于来了。</p>
+<h5 id="java-lang-Class-getPackageName"><a href="#java-lang-Class-getPackageName" class="headerlink" title="java.lang.Class#getPackageName"></a>java.lang.Class#getPackageName</h5><p>获取类的包名，这个方法糖份非常高，减掉了很多琐碎的判断（不同的种类的类包名的获取姿势略有不同），还帮忙做了个缓存。</p>
+<h5 id="java-lang-StackWalker"><a href="#java-lang-StackWalker" class="headerlink" title="java.lang.StackWalker"></a>java.lang.StackWalker</h5><p>这也是个神器，见过了太多的场景，需要获取调用栈，上来就new一个<code>Throwable</code>，然后再<code>getStackTrace</code>。先不说代码里面突然创建一个异常会不会令人害怕，毕竟还可以new一个<code>Thread</code>来做同样的实现；就问你我要是想要做过滤，你是不是要全部拿到过后再过滤；我要是想要一些被JVM滤掉的信息（fast throw了解一下），你又能不能给我。现在有了StackWalker就牛逼了，一切都不是问题，人家还是懒加载的，你不要的它不会加载。详细的使用说明可以看<a href="https://www.baeldung.com/java-9-stackwalking-api" target="_blank" rel="noopener">这里</a>。</p>
+<h5 id="java-util-stream-Stream"><a href="#java-util-stream-Stream" class="headerlink" title="java.util.stream.Stream"></a>java.util.stream.Stream</h5><p>这一期的<code>Stream</code>更新只有两个方法让我感觉有点甜，完整列表看<a href="https://www.baeldung.com/java-9-stream-api" target="_blank" rel="noopener">这里</a>。</p>
+<h6 id="java-util-stream-Stream-iterate"><a href="#java-util-stream-Stream-iterate" class="headerlink" title="java.util.stream.Stream#iterate"></a>java.util.stream.Stream#iterate</h6><p>这个方法其实甜度一般，可以解决类似下面这种场景：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; ++i) &#123;</span><br><span class="line">    System.out.println(i);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>新的写法将变成这样：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Stream.iterate(<span class="number">0</span>, i -&gt; i &lt; <span class="number">10</span>, i -&gt; i + <span class="number">1</span>).forEach(System.out::println);</span><br></pre></td></tr></table></figure>
+<p>本来以为这个方法可以解决遍历<code>Stream</code>时（<code>map</code>、<code>forEach</code>等）获取元素<code>index</code>的场景，仔细看又发现不太一样。Java你能不能争争气，别人家小朋友都有了，我也想要，老指望第三方库给你补基础算什么好汉。</p>
+<h6 id="java-util-stream-Stream-ofNullable"><a href="#java-util-stream-Stream-ofNullable" class="headerlink" title="java.util.stream.Stream#ofNullable"></a>java.util.stream.Stream#ofNullable</h6><p>用来防止<code>null</code>的，甜度一般，只能说，能用上。</p>
+<h5 id="集合工厂方法"><a href="#集合工厂方法" class="headerlink" title="集合工厂方法"></a>集合工厂方法</h5><p>这个方法，甜度一般。这些方法照理说本来应该属于干掉Guava系列的，但是它出来的是不可变的集合，还不能有<code>null</code>元素，这就坑了。后者就不说了，不出来不可变真的是极大地缩减了这些方法的适用范围呀，再加上返回是个<code>List</code>，上层调用者你猜我可不可变，这是强行给Java面试制造考点呀。就不能把集合分一分，可变不可变俩interface，两套工厂嘛，懒得很，怎么能强制不可变呢。</p>
+<h5 id="interface中允许私有方法"><a href="#interface中允许私有方法" class="headerlink" title="interface中允许私有方法"></a>interface中允许私有方法</h5><p>Java 8开始，interface中允许方法由default修饰符修饰，并拥有实现。但是default修饰的方法其可见性和public方法是一样的，有些时候我们想要定义一些private修饰的方法，便不得不定义一个抽象类来实现。为什么有定义private方法的需求我就不多说了，不知道的去翻翻任意版本的代码规范关于方法长度的章节。我着重说说为什么这么执着于在interface里面做这些事情而不想定义抽象类：代码冗余是一方面，一个简单的事情非要我在两个文件中定义；interface允许多继承则是另外一个方面，更多地利用interface能让我日后写实现类的时候更加的方便，这事估计有人会杠，我举个比较好理解的场景，我有一类的class，它们应该是枚举类型，同时它们还应该是某个interface的实现，这个事情你用抽象类抽象给我看看。</p>
+<h5 id="Try-With-Resources改良"><a href="#Try-With-Resources改良" class="headerlink" title="Try With Resources改良"></a>Try With Resources改良</h5><p>从Java SE 7开始，我们有了一种全新的语法（糖）叫Try-With-Resources，这个特性抢了一大堆close工具的活，我们终于可以不再有忘写close导致资源泄漏、忘把close写在finally块导致异常时close失败、finally里面写close还有包个try-catch的烦恼。就地吐个槽，从我做代码review的经历来看，居然有人连这个特性都不知道。但是当我们在Java 9之前写出下面这段代码的时候，却发现编译器不认识这个语法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">testTryWithResources</span><span class="params">()</span> <span class="keyword">throws</span> IOException</span>&#123;</span><br><span class="line">    BufferedReader reader1 = <span class="keyword">new</span> BufferedReader(<span class="keyword">new</span> FileReader(<span class="string">"journaldev.txt"</span>));</span><br><span class="line">    <span class="keyword">try</span> (~~reader1~~) &#123;</span><br><span class="line">        System.out.println(reader1.readLine());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>正确的写法得是下面这样：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">testTryWithResources</span><span class="params">()</span> <span class="keyword">throws</span> IOException</span>&#123;</span><br><span class="line">    BufferedReader reader1 = <span class="keyword">new</span> BufferedReader(<span class="keyword">new</span> FileReader(<span class="string">"journaldev.txt"</span>));</span><br><span class="line">    <span class="keyword">try</span> (BufferedReader reader2 = reader1) &#123;</span><br><span class="line">        System.out.println(reader2.readLine());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个情况从Java 9开始有了变化，前面的那种错误写法在Java 9中得到了正确的识别。<a href="https://www.journaldev.com/12940/javase9-try-with-resources-improvements" target="_blank" rel="noopener">推荐阅读</a></p>
+<h5 id="Deprecated注解增强"><a href="#Deprecated注解增强" class="headerlink" title="@Deprecated注解增强"></a>@Deprecated注解增强</h5><p>@Deprecated这个注解在Java 9之前一直槽点满满。这玩意儿就是一个标识，如果不是编译器（警告）和IDE（样式）的特殊处理，基本就是一个废物。你要是想知道这是从什么版本开始废弃的，以后会不会被彻底删掉，你就只能看Java Doc，Java Doc为此还有一个专门的@deprecated项你说多余不多余。要是遇上那种写代码不爱写注释的，那你就这辈子都别想得到这些信息了。而到了Java 9，这个问题在一定程度上得到了改善，Oracle给@Deprecated注解加了两个方法，<code>since</code>和<code>forRemoval</code>，一眼就能知道这些信息。当然了，估计是为了兼容老版本的JDK，所以这两个方法都给了默认值，那么也就意味着打注解的人不填这两个属性也可以，这个时候就得靠代码review了。有人可能会杠，信息写在注解和注释里面，从代码review的角度是没有区别的，但是我想说，从写代码人的体验上来说，还是不一样的；从另外一个方面讲，这些信息的结构化也有助于代码分析工具（例如<code>jdeprscan</code>）解析这些信息。</p>
+<h4 id="Java-10"><a href="#Java-10" class="headerlink" title="Java 10"></a>Java 10</h4><h5 id="var"><a href="#var" class="headerlink" title="var"></a>var</h5><p>真香不解释，一个变量类型如果带泛型，不巧的是，泛型还嵌套的话，一行代码半行都是这个类型的声明，然后new后面还得把这一大坨再写一遍，代码基本上就没法读了。但是！我就想问，什么时候出val，啊？你是故意这样给lombok留条活路吗？lombok的val是stable feature，var是experimental feature，JDK又只出var不出val，还真是巧滴很呐。<a href="https://openjdk.java.net/projects/amber/LVTIstyle.html" target="_blank" rel="noopener">这里</a>有一篇style guide。</p>
+<h4 id="Java-11"><a href="#Java-11" class="headerlink" title="Java 11"></a>Java 11</h4><h5 id="String-API优化"><a href="#String-API优化" class="headerlink" title="String API优化"></a>String API优化</h5><p>这是一颗甜度非常高的糖，在抄袭Guava/Apache Commons Lang道路上又迈出了坚实的一步（好像哪里没对）。向开发者推出了<code>repeat</code>（再也不用手打一长串了）、<code>isBlank</code>（再也不用Apache的<code>StringUtils#isBlank</code>了）、<code>strip*</code>（像是在制造面试考点，请辨析<code>strip</code>和<code>trim</code>的<a href="https://www.baeldung.com/java-11-string-api#1-difference-between-strip-and-trim" target="_blank" rel="noopener">区别</a>）、<code>lines</code>（这个就厉害了，以换行符/回车符为分割符把字符串分割为字符串List）。</p>
+<h5 id="Local-Variable-Syntax-for-Lambda-Parameters"><a href="#Local-Variable-Syntax-for-Lambda-Parameters" class="headerlink" title="Local Variable Syntax for Lambda Parameters"></a>Local Variable Syntax for Lambda Parameters</h5><p>Java 11引入的唯一一个language feature，还是一个看上去感觉像是在修bug的feature。有一种lambda表达式的写法，但是确实有用处：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(String s1, String s2) -&gt; s1 + s2</span><br></pre></td></tr></table></figure>
+<p>一般可能是在想要给参数加修饰符（比如注解）的时候用，这种写法打Java 8时代就支持，然后Java 10引入了<code>var</code>，推理易得我们可以这么写：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(<span class="keyword">var</span> s1, <span class="keyword">var</span> s2) -&gt; s1 + s2</span><br></pre></td></tr></table></figure>
+<p>然而在Java 10时代这样写是不行的，到了Java 11才可以。</p>
+<h5 id="New-HTTP-client-API"><a href="#New-HTTP-client-API" class="headerlink" title="New HTTP client API"></a>New HTTP client API</h5><p>这个其实也不算语法糖，而是一个功能，在Java 9就已经开始孵化，到了11终于出了正式版。要说跟Apache的HTTP client相比选择谁，这就真的是一个见仁见智的问题了。Java自带的client无痛接入SSL证书，相比于Apache版本的一大坨配置代码友好了许多；此外，拿到的响应直接就可以是一个泛型，而不用拿到一个<code>HttpEntity</code>，也是甜了不少；再有一点，构造HTTP client时的链式调用，以及一个客户端，同步、异步、响应式调用都支持，真的是香得不得了。但是，凡事就怕但是，没有那么多的但是就没有那么多的纠结了，在Java自带的客户端中，很多我们熟悉的Apache版本客户端的配置也变得不好配或者干脆就没有，比如连接池方面，连接池大小、连接存活时间，虽然可以在JVM参数里面或者<code>net.properties</code>里面配，但却是对全局生效的，配置麻烦且不能对单个客户端做个性化配置，像每一个域名所能占用的最大连接数直接就没有对应配置项，咋寻思的呢你说；再比如拦截器设施，也是缺位的，这会让中间件的开发同学很忧伤，比如统一的gzip压缩/解压处理，请求的统一日志记录、监控那是不要想了。这么比较下来，我都不想说话了，扼腕叹息，甚至还想吐个槽，这客户端还是太蒻鸡。</p>
+<h4 id="Java-12"><a href="#Java-12" class="headerlink" title="Java 12"></a>Java 12</h4><h5 id="又是CompletionStage优化"><a href="#又是CompletionStage优化" class="headerlink" title="又是CompletionStage优化"></a>又是CompletionStage优化</h5><p>增加了<code>exceptionallyAsync</code>方法，让开发者能在出异常时也能异步地处理这个异常。</p>
+<h5 id="又是String-API优化"><a href="#又是String-API优化" class="headerlink" title="又是String API优化"></a>又是String API优化</h5><p>这一期的优化有两点，甜度比较高的是<code>transform</code>，可以把当前字符串按传入的方法转换成想要的样子，应该是为了方便链式调用；另外还有一个<code>indent</code>，估计更常用于格式化输出字符串，看方法名知道会在字符串前面加指定个数的空格，但是一看注释发现事情并没有那么简单。这个方法会先调用Java 11中引入的<code>lines</code>方法，也就是说如果字符串中换行符/回车符，那么，这个缩进是加在分割后的每一行前面的；此外，如果传入的是<code>Integer.MIN_VALUE</code>，那么会对这个字符串分割后的每一行做<code>stripLeading</code>操作；最后，如果传入的是非<code>Integer.MIN_VALUE</code>的负数，那么这个字符串分割后的每一行开头的指定个数个空白字符会被干掉，如果这个指定的个数比空白字符个数多，那么全部空白字符都会被干掉。这个方法还有一个标准化的作用，字符串的回车符/换行符都会被变成换行符，并且在末位还会缀一个换行符。</p>
+<h5 id="CompactNumberFormat"><a href="#CompactNumberFormat" class="headerlink" title="CompactNumberFormat"></a>CompactNumberFormat</h5><p>这颗糖，用到的人就会觉得超甜；用不到的人大概就是不明觉厉。就是增加了一种<code>NumberFormat</code>的子类，这个子类的规则是取近似数然后转成人类可读语言以及反之。详情看<a href="https://dzone.com/articles/compact-number-formatting-comes-to-jdk-12" target="_blank" rel="noopener">这里</a>，有例子，一目了然。</p>
+<h4 id="Java-13"><a href="#Java-13" class="headerlink" title="Java 13"></a>Java 13</h4><h5 id="Text-Block（Preview）"><a href="#Text-Block（Preview）" class="headerlink" title="Text Block（Preview）"></a>Text Block（Preview）</h5><p>这颗糖，24K纯甜，真香。曾经为了能让代码好看故意把长字符串截断写成拼接（比如SQL），现在终于不需要了，早该有了啊。有了它，我还用什么MyBatis呀，Java类里面写SQL它不香么。这个好像有点引战，但是不可否认Java这一次更新是一个巨大的进步，可惜还在preview，估计Java 15才能出正式版。</p>
+<h4 id="Java-14"><a href="#Java-14" class="headerlink" title="Java 14"></a>Java 14</h4><h5 id="switch表达式"><a href="#switch表达式" class="headerlink" title="switch表达式"></a>switch表达式</h5><p>这也是一颗迟到的24K纯甜的糖，不想解释了，看<a href="https://docs.oracle.com/en/java/javase/13/language/switch-expressions.html" target="_blank" rel="noopener">这里</a>。吐槽一句，哪天才能在判断到case已经列举完了的时候不用再跟<code>default</code>了也能让表达式成立，又不是做不到，蠢得很。顺便，sealed class已经在路上了（Java 15），switch如果能支持上枚举它，那就更香了。</p>
+<h5 id="Pattern-Matching-for-instanceof（Preview）"><a href="#Pattern-Matching-for-instanceof（Preview）" class="headerlink" title="Pattern Matching for instanceof（Preview）"></a>Pattern Matching for instanceof（Preview）</h5><p>这也是一颗迟到的24K纯甜的糖，show you the code：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Object a = <span class="string">"jplx"</span>;</span><br><span class="line"><span class="keyword">if</span>(a <span class="keyword">instanceof</span> String s)&#123;</span><br><span class="line">    System.out.println(s.length());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>省掉了把<code>a</code>强转成<code>String</code>的丑陋过程，直接就能获得一个<code>String</code>对象<code>s</code>，香不香。可惜这个还在Preview，正式版估计得Java 16，脑阔痛。</p>
+<h5 id="Records（Preview）"><a href="#Records（Preview）" class="headerlink" title="Records（Preview）"></a>Records（Preview）</h5><p>简单而言，就是lombok的<code>@Value</code>这样子，详细的可以看<a href="https://blogs.oracle.com/javamagazine/records-come-to-java" target="_blank" rel="noopener">这里</a>。突然发现Java 14带来的糖都很甜啊，可惜两颗是Preview都得等Java 16，有生之年系列。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Note/" rel="tag"># Note</a>
+              <a href="/tags/Java/" rel="tag"># Java</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/12/18/hexo-next-abc/" rel="prev" title="NexT ABC">
+      <i class="fa fa-chevron-left"></i> NexT ABC
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#背景"><span class="nav-number">1.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#论据列举"><span class="nav-number">2.</span> <span class="nav-text">论据列举</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Java-9"><span class="nav-number">2.1.</span> <span class="nav-text">Java 9</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Flow-API"><span class="nav-number">2.1.1.</span> <span class="nav-text">Flow API</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#CompletableFuture优化"><span class="nav-number">2.1.2.</span> <span class="nav-text">CompletableFuture优化</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#java-util-concurrent-CompletableFuture-copy"><span class="nav-number">2.1.2.1.</span> <span class="nav-text">java.util.concurrent.CompletableFuture#copy</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#java-util-concurrent-CompletableFuture-minimalCompletionStage"><span class="nav-number">2.1.2.2.</span> <span class="nav-text">java.util.concurrent.CompletableFuture#minimalCompletionStage</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#java-util-concurrent-CompletableFuture-orTimeout"><span class="nav-number">2.1.2.3.</span> <span class="nav-text">java.util.concurrent.CompletableFuture#orTimeout</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#java-util-concurrent-CompletableFuture-orTimeout-1"><span class="nav-number">2.1.2.4.</span> <span class="nav-text">java.util.concurrent.CompletableFuture#orTimeout</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#static-java-util-concurrent-CompletableFuture-failedFuture"><span class="nav-number">2.1.2.5.</span> <span class="nav-text">static java.util.concurrent.CompletableFuture#failedFuture</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#java-lang-Class-getPackageName"><span class="nav-number">2.1.3.</span> <span class="nav-text">java.lang.Class#getPackageName</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#java-lang-StackWalker"><span class="nav-number">2.1.4.</span> <span class="nav-text">java.lang.StackWalker</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#java-util-stream-Stream"><span class="nav-number">2.1.5.</span> <span class="nav-text">java.util.stream.Stream</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#java-util-stream-Stream-iterate"><span class="nav-number">2.1.5.1.</span> <span class="nav-text">java.util.stream.Stream#iterate</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#java-util-stream-Stream-ofNullable"><span class="nav-number">2.1.5.2.</span> <span class="nav-text">java.util.stream.Stream#ofNullable</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#集合工厂方法"><span class="nav-number">2.1.6.</span> <span class="nav-text">集合工厂方法</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#interface中允许私有方法"><span class="nav-number">2.1.7.</span> <span class="nav-text">interface中允许私有方法</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Try-With-Resources改良"><span class="nav-number">2.1.8.</span> <span class="nav-text">Try With Resources改良</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Deprecated注解增强"><span class="nav-number">2.1.9.</span> <span class="nav-text">@Deprecated注解增强</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Java-10"><span class="nav-number">2.2.</span> <span class="nav-text">Java 10</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#var"><span class="nav-number">2.2.1.</span> <span class="nav-text">var</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Java-11"><span class="nav-number">2.3.</span> <span class="nav-text">Java 11</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#String-API优化"><span class="nav-number">2.3.1.</span> <span class="nav-text">String API优化</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Local-Variable-Syntax-for-Lambda-Parameters"><span class="nav-number">2.3.2.</span> <span class="nav-text">Local Variable Syntax for Lambda Parameters</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#New-HTTP-client-API"><span class="nav-number">2.3.3.</span> <span class="nav-text">New HTTP client API</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Java-12"><span class="nav-number">2.4.</span> <span class="nav-text">Java 12</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#又是CompletionStage优化"><span class="nav-number">2.4.1.</span> <span class="nav-text">又是CompletionStage优化</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#又是String-API优化"><span class="nav-number">2.4.2.</span> <span class="nav-text">又是String API优化</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#CompactNumberFormat"><span class="nav-number">2.4.3.</span> <span class="nav-text">CompactNumberFormat</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Java-13"><span class="nav-number">2.5.</span> <span class="nav-text">Java 13</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Text-Block（Preview）"><span class="nav-number">2.5.1.</span> <span class="nav-text">Text Block（Preview）</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Java-14"><span class="nav-number">2.6.</span> <span class="nav-text">Java 14</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#switch表达式"><span class="nav-number">2.6.1.</span> <span class="nav-text">switch表达式</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Pattern-Matching-for-instanceof（Preview）"><span class="nav-number">2.6.2.</span> <span class="nav-text">Pattern Matching for instanceof（Preview）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Records（Preview）"><span class="nav-number">2.6.3.</span> <span class="nav-text">Records（Preview）</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Schütze Hades</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">11</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Schütze Hades</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.2.1
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.6.0
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script>
+  function loadCount() {
+    var d = document, s = d.createElement('script');
+    s.src = 'https://hadespalace.disqus.com/count.js';
+    s.id = 'dsq-count-scr';
+    (d.head || d.body).appendChild(s);
+  }
+  // defer loading until the whole page loading is completed
+  window.addEventListener('load', loadCount, false);
+</script>
+<script>
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: {page: {
+            url: "https://schutzehades.github.io/2020/06/04/syntactic-sugar-after-java-8/",
+            identifier: "2020/06/04/syntactic-sugar-after-java-8/",
+            title: "Java 8后，新增的语法糖们"
+          }
+        }
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://hadespalace.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+</body>
+</html>

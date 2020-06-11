@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('https://schutzehades.github.io').hostname,
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.6.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":true,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    comments: {"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
+  };
+</script>
+
+  <meta name="description" content="自定义切面的工作流程。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="jvm-sandbox源码阅读（三）——EventWatchBuilder">
+<meta property="og:url" content="https://schutzehades.github.io/2018/07/13/jvm-sandbox-code-3/index.html">
+<meta property="og:site_name" content="Hades Palace">
+<meta property="og:description" content="自定义切面的工作流程。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2018-07-13T08:02:37.000Z">
+<meta property="article:modified_time" content="2019-12-18T09:33:11.654Z">
+<meta property="article:author" content="Schütze Hades">
+<meta property="article:tag" content="jvm-sandbox">
+<meta property="article:tag" content="源码阅读">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://schutzehades.github.io/2018/07/13/jvm-sandbox-code-3/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>jvm-sandbox源码阅读（三）——EventWatchBuilder | Hades Palace</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Hades Palace</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://schutzehades.github.io/2018/07/13/jvm-sandbox-code-3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Schütze Hades">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hades Palace">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          jvm-sandbox源码阅读（三）——EventWatchBuilder
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-07-13 16:02:37" itemprop="dateCreated datePublished" datetime="2018-07-13T16:02:37+08:00">2018-07-13</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-12-18 17:33:11" itemprop="dateModified" datetime="2019-12-18T17:33:11+08:00">2019-12-18</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/jvm-sandbox/" itemprop="url" rel="index">
+                    <span itemprop="name">jvm-sandbox</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2018/07/13/jvm-sandbox-code-3/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/07/13/jvm-sandbox-code-3/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+            <div class="post-description">　　自定义切面的工作流程。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <blockquote>
+<p>下面的PlantUML图，在其上右键点击“在新标签页中打开链接(T)”食用更佳</p>
+</blockquote>
+<h3 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h3><p>　　用户自定义的切面会在调用EventWatchBuilder.onWatch()方法后织入目标应用。在这个过程会涉及到几个定义在EventWatchBuilder中的Interface：IBuildingForClass、IBuildingForBehavior、IBuildingForWatching和IBuildingForUnWatching。需要注意的是，EventWatchBuilder只是一个辅助类，让编写切面的过程更加清晰，调用的API更加易于理解，最终执行路径实际上依然是落在ModuleEventWatcher.watch()方法上。具体到切面编写者使用上的区别，可以参考jvm-sandbox官方给出的两个例子：<a href="https://github.com/alibaba/jvm-sandbox/wiki/MODULE-DEVELOPER-GUIDE#%E7%BC%96%E5%86%99%E6%A8%A1%E5%9D%97%E4%BB%A3%E7%A0%81" target="_blank" rel="noopener">老写法</a>VS<a href="https://github.com/alibaba/jvm-sandbox/wiki/FOR-EXAMPLE#%E4%BB%A3%E7%A0%81%E7%BB%87%E5%85%A5" target="_blank" rel="noopener">新写法</a>。</p>
+<h3 id="类图"><a href="#类图" class="headerlink" title="类图"></a>类图</h3><img  src=http://www.plantuml.com/plantuml/svg/rLVBRjf05Dtp5RC41VW02r51IjjK8OfAgYoYBWRx0fRCZ3KUav8s-VREqzZZ9qHgrMmIttlk-pNn8vmaQ740mXynztVpD8m2OEXN3ucVqPu6QGGdDZ0FBKiqZLrlhgKoI3nq6oPyebI5PFk9CiMOAjXLoLQ_cv615gTaHevANt_WeHlNY0LfX1_XbnSFgO_9XscxG8mv1qOyjE9CW2e5NdiX4Q0Dzg7CDOcx2eaVfG7CAUK9PpXkS3PCRbnmcUIXDQKHODAWHukiqhMfGnURENG5hOFLvv3lPhuF8dbO_VAGI4yzVeU56PE-XsCCgaZQbYtJU3m-HzxKBB55QnEV4K8vvY4b5zft5PpbWEhVEUpm8QJChP2bMsWhhguNBS2sOwSg5QrBaSK-viTxpF0UX1KTRQkGWs_FJgkA3XKgwX15Mlpq8JwdHcqQBd7Y_4vfLN6s6xakQjvkhbZtZNZfpksqoTNw5tGNPEa5N1y7Xz07UN-0o3ioAtmB5QMxbOc2v9ma5_dF8L9SMO8PO_Xes6D9q0KewAqRI-jpVYpl6TqoEPYn-SD3bjGOiPIznb7KRqNTXWJ-f-pLfkyxULy2J_BMTqE1e3yGLaTgk53DJHyvew29fysgLgecDfrI1r6-y1fGkdCYAct_CwDfB5ER0PqTKOTSR-o8LppHB6jQcGVddjYtdeSgf_QCJ9MtVKESnOtyheHK1UaqroXhsXLm4GhmoQbjfoPGqsZPezTsNYwDogZH-MOoOyP0f-VfX-OfOByQeL-_RvWSbtOV9ehbu8QelB3pVVMsD-9VS5AjeKxWKLIgLI8BsasuZNyh2JPPYZiraGL1PUXoFnHIrycFl42NI5zxvPVyvFTeLExlobUM2yrEQUNoTz7PKkhft1MthbrrQzY84wutjDtCvdyYl15nVWEUCY8Renxpi6FqkHQYB82wAKN-4Fc2AC_8NRfNmwifN_41gwpSYVcrUJsnbi1tD6ZYVOJ4pnervwVqeIwUV-9CJUB-fY-wEkgMkqv4EGV47Vi3>
+<h3 id="执行流程"><a href="#执行流程" class="headerlink" title="执行流程"></a>执行流程</h3><img  src=http://www.plantuml.com/plantuml/svg/ZLTDJnjN5zxFhq3g9j4hfVjaqoHj9Qf6gjgextg2Xs39jQFna3GI2_DXOmSRcq0Ds0P3OlEH1jiab1X_m8_ft3lZ5N-XpxbdR0_1DCs6pFMvv_Cvvpntnbry9se5-ombaekzhJSpMjJIJKkxQtSldBM3Rtusef5fSyBenGhknQ9zlkN-bPSV3qIywYv_4jdyeqXWEcHyzzm8M__NhOafmnJrC_Tuzvvs5zVjvYlted6JZDnU4EtMyFp1T30Ky2cGEsSoK-kLOkxUhDkOXxvn9H8CF_q-OZuCwT6eU9tsdpqmflJdmOZf51Pa_an-_CEjdJlT6ZoNxOhSshNRf_UquEJOBLOAIpBxMkuUGXuopi6ItIqvnHMvl7_PIOhCHr4w60Y8t49lurJM_fBBLP5T5yLj-7JPITqUiwQCyDYjbqRqjZQ6VtVPrqXO1GN7Rjtsd54Py_lRbo3rjMtxVEcUqX2EMCPOo9YqrDUe2o9RjzjL9vTmzz_QpHO2GVcSkJCk9TJPpPZTV2VUR8jEwxAJbjcSVLwqMmbPF16L0jbJyhrOIYuTGa2autBf_MMde4n-DVOYQ4qzr4CXdBZxSw9UTdVJP2WHxyqV3DEh8YNzfHIKknURC6gVBOdSyXDZCc8QfEBlsAm-QHac_VzdmvesmmW0XyhIsDZWjyTJPkG5Vh9RIwYJJ6Lis7xpfxk_9x8hbvsYpxCVWs7Z9i_m-KMtwFw_cf575L79GuDxiJ787UUKxFzaHfwQHZJAMO3OJwRw_gmiNX4yfAHxYsbqs21vLBJM6kDB6LLbouXScd666wHCmT47qw9exVqTcxEx2RbHfyhLvd7kh9N5IbUi7CXIsMx7UvivkxNCjt3IMpy1eA7SRbRTne4eDTpw2Trj74E9I6uf-s9_IQJpmrve7W7Uv4Kp9jVt8CK2efQMoHokahE937ACPCCZfSC81mYz6lu69xMhhT3l0wUzYFd1y-QUDWIx9yP2LBfc1UdhBMRSRXVLvcoY-mYzsJdvHmE-tmyy3qwWdb7B21icdDMusivnspuhGu1lkUTnyUeGXrJIsY7RfhHryYAnIKtnQaTabqIrgr0JSzf9kvrn5aunA3HC2Xv_REn-G7y6oFPjYiQi-pQEQgj1rZ_b5jIe_BLjPxa1O8di7Z0rCeehL_-dlkuyVldC6CQ3TCCv3rcj17cvKRy-ME-yk9Bema8lbhKxErGTL0k1EAqTfxqgZZOmse2GaRDbz4pLeErQXTen-omfqYsH_9DS-h2BG_w4D5djus5cXCOxdhgPFaw-6CyDm7dn6MnIFjYaHVmKI6OiKSwLTsWHJW3asUj-IsjS58ec5KF_oT9xzuGMcSY-Oqmw-vcXSgMDOOPpBYi-lm-6B0L70e7_Xs5m3oDe4IiO2IDD-9blC6nmmMwsgLfhnt9zdwUrXg09gqX3yGGNXaDkkJf2gqXk3dNa6wnZe48JiJ8QujhkbLkUNZY54Q70kiIk0HRV_MuDt4Ja6bTzU5fiolgQ9rqfU1EpLNIEYhHdrFg5l5EiYHIDZM1qF3mHcWuOlqm_KTlSGFPVfmV73o8HAsgP-ZE_4HfYdGBDpafU5avwfG-3KZ7Ru4fhR0x1ypKQSxaz6Brcak3-cJqG7BGPL5JjxYgQ5yaOaM6WIbGEQV2gAJhmy0hilpKczUcGTJEoPuWebJ5GrVTu0Bn798lWHR_euS2JoE_AIoWs7fjwE8hbzLkV8L7Sdzeqk9ADXrXgR0EbYTvyCzeh9aGEc-38tp_eWDxQvc0VzERUqiGf7NZE3vK_qiFwK_YkJrZ1vqQ_BQczr0xLUhCPiPm0V90wZW9RLix7iSH4xhtOfFtC7X3eLT6kZ1JQFGf-M8nklGeNs9Bcfnkqo5CPVvQzyJ4UHlMcVqEEeKSF17nnzrqbwff88s4__Fe8cKCJ0pGZKrnPmB15uu12qPuuRliJXfcCPSxPaaTlHIVhhThiQ-ZZ-SmB6bE3uDez5giPPY1ibdKE8v3bgaoTCosLpG-olCeIdAqhnUe36vRGps0d20V23BwlHuq2HGe9BbWscPfivU2ODioMJa9tdXhM_L3enuWUC09UQzowFNIGD-2L59k6rK_Ou897RHe9zew6dieC2afbLOa7NZWu1KEYuqE4YKyV02Hv4PCdxUlCcby48MzHZWV08Wt_waGlgs_QdVTDKt_9kq0ShHDlLxLdsiVb1I174MurpZDKlFEaK-euYJBlDd-F_CVMu7aEOYgIX0bMdrpXv630_YVqNmS_silPYbrsodPtXvX1TnLAuI6pEaQdicLVRBdrMG0IZncyw4X4gV4h1azovxj4wLwLEKVz1AF7m4Rb-Ybn48zDjNZdimsrLIeoVyI1AMH2QdGvITlUdDmkKTEKtl4XnLpVedPHpJ4uX54HswJMKMnJaI0lZt8rmx5rIwDPvvUuniKQABb_5gjkBT4ZehkAx394lCT5B3vyJMMhihpWxqMFHoeI2Kcc_zmfR0Lt_ORu1GXA8T_lidwsDVujlOT4SgUtMHdO1PZxyrsTA-O_cAJWyuCQzBcBo6QepnJHW1rDdYO_UpY0qFi7PzIAFFi7>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/jvm-sandbox/" rel="tag"># jvm-sandbox</a>
+              <a href="/tags/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/" rel="tag"># 源码阅读</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/07/10/jvm-sandbox-code-2/" rel="prev" title="jvm-sandbox源码阅读（二）——JettyCoreServer">
+      <i class="fa fa-chevron-left"></i> jvm-sandbox源码阅读（二）——JettyCoreServer
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/12/17/jdk-bugs/" rel="next" title="活久见——我经历的JDK bug们">
+      活久见——我经历的JDK bug们 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#概述"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#类图"><span class="nav-number">2.</span> <span class="nav-text">类图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#执行流程"><span class="nav-number">3.</span> <span class="nav-text">执行流程</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Schütze Hades</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">11</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Schütze Hades</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.2.1
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.6.0
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script>
+  function loadCount() {
+    var d = document, s = d.createElement('script');
+    s.src = 'https://hadespalace.disqus.com/count.js';
+    s.id = 'dsq-count-scr';
+    (d.head || d.body).appendChild(s);
+  }
+  // defer loading until the whole page loading is completed
+  window.addEventListener('load', loadCount, false);
+</script>
+<script>
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: {page: {
+            url: "https://schutzehades.github.io/2018/07/13/jvm-sandbox-code-3/",
+            identifier: "2018/07/13/jvm-sandbox-code-3/",
+            title: "jvm-sandbox源码阅读（三）——EventWatchBuilder"
+          }
+        }
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://hadespalace.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+</body>
+</html>
